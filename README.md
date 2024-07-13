@@ -117,7 +117,7 @@ Finally, to render the statusline, we need to first get the renderer function:
 local lc_components = require("linecook.components")
 
 local render = linecook.mk_renderer {
-    myModeContainer,
+    myModeComponent,
     -- Divides the statusline into left/right parts by inserting a "%="
     -- See `:h statusline`
     lc_components.divider,
