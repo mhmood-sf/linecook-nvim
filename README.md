@@ -134,3 +134,9 @@ render the statusline. To use this, we need to set the `statusline` (or `stl`)
 option to `%!v:lua.require'<this_module>'.render()`, where `<this_module>` is
 the location of the current module. You also need to return the render function
 so that it can be accessed in the statusline.
+
+## TODO
+
+- [ ] Component sections
+- [ ] More builtins and utilities
+- [ ] User-facing docs
