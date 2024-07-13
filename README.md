@@ -24,7 +24,8 @@ There are just three main concepts:
 Components are just functions that return strings that are joined together and
 passed on to the `statusline` option. For example, a function that returns the
 current mode, or the current filetype, and so on. These are the main building
-blocks in this plugin.
+blocks in this plugin. These functions can also take an input that contains
+useful information about the statusline they are associated with.
 
 Containers are *also* functions that return strings, but they also take an
 input string. The idea is that containers take whatever value is to be
@@ -41,9 +42,9 @@ above and combine them together.
 
 ## Examples
 
-The following is a very simple component:
+The following is a very simple component (note we ignore the input for now):
 ```lua
-local function myModeComponent()
+local function myModeComponent(_stl)
     return string.upper(vim.fn.mode())
 end
 ```
@@ -51,17 +52,17 @@ end
 This component will indicate the current mode, in uppercase. Let's add some
 styling to it, using `mk_container`:
 ```lua
-local linecook = require("linecook")
-local myModeContainer = linecook.mk_container {
+local lc = require("linecook")
+local myModeContainer = lc.mk_container {
     name = "myModeContainer",
-    style = { fg = "#000000", bg = "#FFFFFF" },
+    style = { fg = "black", bg = "white" },
 }
 ```
 
 This container will apply a black-on-white style to its content. To apply it,
 we need to modify the component:
 ```diff
- local function myModeComponent()
+ local function myModeComponent(_stl)
 -    return string.upper(vim.fn.mode())
 +    return myModeContainer(string.upper(vim.fn.mode()))
  end
@@ -71,31 +72,55 @@ Let's add a separator to the right side, and some padding to make it look nicer:
 ```diff
 local myModeContainer = linecook.mk_container {
      name = "myModeContainer",
-     style = { fg = "#000000", bg = "#FFFFFF" },
+     style = { fg = "black", bg = "white" },
++    left = { pad = 1 },
 +    right = {
-+        sep = "",
-+        pad = 1
-+    },
-+    left = {
-+        pad = 1
++        sep = "",
++        pad = 1,
++        style = { fg = "white" }
 +    }
  }
 ```
 
 We'll make another component to show the filetype:
 ```lua
+local function myFtComponent(stl)
+    return vim.api.nvim_buf_get_option(stl.bufnr, "filetype")
+end
+```
+
+Note that this time we do make use of the input parameter. `stl.bufnr` is the
+handle for the buffer in the current window associated with the statusline. We
+use this to get the filetype.
+
+This time we'll create a container for the component using the helpers provided:
+```lua
+local lc_containers = require("linecook.containers")
+
+local myFtContainer = lc_containers.plain("myFtContainer", {
+    fg = "black", bg = "white"
+})
+```
+
+The "plain" container does not use any fancy separators, and just colors the
+content of the component. Now we update the component:
+```diff
 local function myFtComponent()
-    return vim.bo.filetype
+-    return vim.api.nvim_buf_get_option(stl.bufnr, "filetype")
++    return myFtContainer(vim.api.nvim_buf_get_option(stl.bufnr, "filetype"))
 end
 ```
 
 Finally, to render the statusline, we need to first get the renderer function:
 ```lua
-local helper = require("linecook.components")
+
+local lc_components = require("linecook.components")
 
 local render = linecook.mk_renderer {
     myModeContainer,
-    helper.divider,
+    -- Divides the statusline into left/right parts by inserting a "%="
+    -- See `:h statusline`
+    lc_components.divider,
     myFtComponent,
 }
 
