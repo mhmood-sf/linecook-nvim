@@ -112,7 +112,12 @@ end
 ---@return fun(): string
 function M.mk_renderer(components)
     return function()
-        local winid = vim.g.statusline_winid
+        -- When a statusline is being drawn,
+        -- `vim.g.statusline_winid` is set appropriately
+        -- (see `:h statusline`). Outside these contexts,
+        -- we will use `0`, which in most cases will default
+        -- to the "current" window.
+        local winid = vim.g.statusline_winid or 0
 
         ---@type StatuslineInfo
         local stl = {
