@@ -2,12 +2,16 @@
 
 > A plugin to cook your own statusline.
 
-Note that this is not really a statusline plugin, it is more of a library that
+Rather than a statusline plugin, linecook is more of a library that
 makes it easier to style and compose your own statusline. It is more
 lower-level than usual statusline plugins, and you will have to implement much
 of the functionality yourself. If you need more advanced functionality (refresh
-timers, lazy loading, event handling, etc.) then it is recommended to use a
-more fully-featured plugin.
+timers, lazy loading, event handling, etc.) without having to write it yourself
+then it is recommended to use a more fully-featured plugin.
+
+> [!IMPORTANT]
+> This plugin is still in early development stages, and the API is still subject
+> to breaking changes.
 
 ## Installation
 
@@ -16,7 +20,7 @@ favorite plugin manager.
 
 ## Usage
 
-There are just three main concepts:
+There are three main concepts:
 - components
 - containers
 - the rendering function
@@ -113,13 +117,12 @@ end
 
 Finally, to render the statusline, we need to first get the renderer function:
 ```lua
-
 local lc_components = require("linecook.components")
 
 local render = linecook.mk_renderer {
     myModeComponent,
     -- Divides the statusline into left/right parts by inserting a "%="
-    -- See `:h statusline`
+    -- See `:h statusline` for more.
     lc_components.divider,
     myFtComponent,
 }
@@ -137,6 +140,6 @@ so that it can be accessed in the statusline.
 
 ## TODO
 
-- [ ] Component sections
+- [ ] Component "sections"
 - [ ] More builtins and utilities
 - [ ] User-facing docs
