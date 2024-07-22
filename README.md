@@ -143,3 +143,4 @@ so that it can be accessed in the statusline.
 - [ ] Component "sections"
 - [ ] More builtins and utilities
 - [ ] User-facing docs
+- [ ] Multiple statuslines (a list of components is one "statusline", the renderer takes a function that returns a statusline and renders that one; allows users to create different statuslines for different filetypes as well such as statuslines for special buffers).
