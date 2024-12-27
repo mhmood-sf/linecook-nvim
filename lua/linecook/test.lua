@@ -25,7 +25,7 @@ local function myModeComponent()
 end
 
 local function myFtComponent(stl)
-    return myFtContainer(vim.api.nvim_buf_get_option(stl.bufnr, "filetype"))
+    return myFtContainer(vim.api.nvim_get_option_value("filetype", { buf = stl.bufnr }))
 end
 
 local render = linecook.mk_renderer {
